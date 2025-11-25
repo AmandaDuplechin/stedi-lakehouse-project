@@ -26,8 +26,8 @@ DEFAULT_DATA_QUALITY_RULESET = """
     ]
 """
 
-# Script generated for node accelerometer_landing
-accelerometer_landing_node1764025598125 = glueContext.create_dynamic_frame.from_catalog(database="stedi", table_name="accelerometer_landing", transformation_ctx="accelerometer_landing_node1764025598125")
+# Script generated for node accelerometer_landing_s3
+accelerometer_landing_s3_node1764064519641 = glueContext.create_dynamic_frame.from_options(format_options={"multiLine": "false"}, connection_type="s3", format="json", connection_options={"paths": ["s3://duplechin-d609-001/landing-zone/accelerometer/"], "recurse": True}, transformation_ctx="accelerometer_landing_s3_node1764064519641")
 
 # Script generated for node customer_trusted
 customer_trusted_node1764025622521 = glueContext.create_dynamic_frame.from_catalog(database="stedi", table_name="customer_trusted", transformation_ctx="customer_trusted_node1764025622521")
@@ -39,7 +39,7 @@ FROM a
 JOIN c
 ON a.user = c.email
 '''
-accelerometer_filter_join_node1764025644655 = sparkSqlQuery(glueContext, query = SqlQuery0, mapping = {"a":accelerometer_landing_node1764025598125, "c":customer_trusted_node1764025622521}, transformation_ctx = "accelerometer_filter_join_node1764025644655")
+accelerometer_filter_join_node1764025644655 = sparkSqlQuery(glueContext, query = SqlQuery0, mapping = {"c":customer_trusted_node1764025622521, "a":accelerometer_landing_s3_node1764064519641}, transformation_ctx = "accelerometer_filter_join_node1764025644655")
 
 # Script generated for node accelerometer_trusted_target
 EvaluateDataQuality().process_rows(frame=accelerometer_filter_join_node1764025644655, ruleset=DEFAULT_DATA_QUALITY_RULESET, publishing_options={"dataQualityEvaluationContext": "EvaluateDataQuality_node1764023522025", "enableDataQualityResultsPublishing": True}, additional_options={"dataQualityResultsPublishing.strategy": "BEST_EFFORT", "observations.scope": "ALL"})

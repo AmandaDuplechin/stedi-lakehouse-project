@@ -26,8 +26,8 @@ DEFAULT_DATA_QUALITY_RULESET = """
     ]
 """
 
-# Script generated for node customer_landing
-customer_landing_node1764007564553 = glueContext.create_dynamic_frame.from_catalog(database="stedi", table_name="customer_landing", transformation_ctx="customer_landing_node1764007564553")
+# Script generated for node customer_landing_s3
+customer_landing_s3_node1764063866163 = glueContext.create_dynamic_frame.from_options(format_options={"multiLine": "false"}, connection_type="s3", format="json", connection_options={"paths": ["s3://duplechin-d609-001/landing-zone/customer/"], "recurse": True}, transformation_ctx="customer_landing_s3_node1764063866163")
 
 # Script generated for node filter_research_customers
 SqlQuery0 = '''
@@ -35,7 +35,7 @@ SELECT *
 FROM myDataSource
 WHERE sharewithresearchasofdate IS NOT NULL
 '''
-filter_research_customers_node1764020849752 = sparkSqlQuery(glueContext, query = SqlQuery0, mapping = {"myDataSource":customer_landing_node1764007564553}, transformation_ctx = "filter_research_customers_node1764020849752")
+filter_research_customers_node1764020849752 = sparkSqlQuery(glueContext, query = SqlQuery0, mapping = {"myDataSource":customer_landing_s3_node1764063866163}, transformation_ctx = "filter_research_customers_node1764020849752")
 
 # Script generated for node customer_trusted_target
 EvaluateDataQuality().process_rows(frame=filter_research_customers_node1764020849752, ruleset=DEFAULT_DATA_QUALITY_RULESET, publishing_options={"dataQualityEvaluationContext": "EvaluateDataQuality_node1764020659346", "enableDataQualityResultsPublishing": True}, additional_options={"dataQualityResultsPublishing.strategy": "BEST_EFFORT", "observations.scope": "ALL"})

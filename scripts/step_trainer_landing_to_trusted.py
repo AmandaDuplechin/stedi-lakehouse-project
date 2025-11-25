@@ -26,11 +26,11 @@ DEFAULT_DATA_QUALITY_RULESET = """
     ]
 """
 
-# Script generated for node step_trainer_landing
-step_trainer_landing_node1764027734260 = glueContext.create_dynamic_frame.from_catalog(database="stedi", table_name="step_trainer_landing", transformation_ctx="step_trainer_landing_node1764027734260")
-
 # Script generated for node customer_curated
 customer_curated_node1764027816675 = glueContext.create_dynamic_frame.from_catalog(database="stedi", table_name="customer_curated", transformation_ctx="customer_curated_node1764027816675")
+
+# Script generated for node step_trainer_landing_s3
+step_trainer_landing_s3_node1764065001136 = glueContext.create_dynamic_frame.from_options(format_options={"multiLine": "false"}, connection_type="s3", format="json", connection_options={"paths": ["s3://duplechin-d609-001/landing-zone/step_trainer/"], "recurse": True}, transformation_ctx="step_trainer_landing_s3_node1764065001136")
 
 # Script generated for node step_trainer_trusted_join
 SqlQuery0 = '''
@@ -38,9 +38,8 @@ SELECT DISTINCT s.*
 FROM s
 JOIN c
 ON s.serialnumber = c.serialnumber
-
 '''
-step_trainer_trusted_join_node1764027865276 = sparkSqlQuery(glueContext, query = SqlQuery0, mapping = {"s":step_trainer_landing_node1764027734260, "c":customer_curated_node1764027816675}, transformation_ctx = "step_trainer_trusted_join_node1764027865276")
+step_trainer_trusted_join_node1764027865276 = sparkSqlQuery(glueContext, query = SqlQuery0, mapping = {"c":customer_curated_node1764027816675, "s":step_trainer_landing_s3_node1764065001136}, transformation_ctx = "step_trainer_trusted_join_node1764027865276")
 
 # Script generated for node step_trainer_trusted_target
 EvaluateDataQuality().process_rows(frame=step_trainer_trusted_join_node1764027865276, ruleset=DEFAULT_DATA_QUALITY_RULESET, publishing_options={"dataQualityEvaluationContext": "EvaluateDataQuality_node1764027686041", "enableDataQualityResultsPublishing": True}, additional_options={"dataQualityResultsPublishing.strategy": "BEST_EFFORT", "observations.scope": "ALL"})

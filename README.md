@@ -63,3 +63,4 @@ All values match the project rubric.
 All ETL jobs executed successfully, wrote Parquet to S3, and updated the Glue Data Catalog.
 Athena validated correct row counts for every table.
 
+# stedi-lakehouse-project
